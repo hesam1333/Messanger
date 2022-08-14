@@ -26,11 +26,9 @@ namespace Messenger.Controllers
 
             CancellationToken ct = context.RequestAborted;
             WebSocket currentSocket = await context.WebSockets.AcceptWebSocketAsync();
-            var socketId = Guid.NewGuid().ToString();
 
             var hubModel = new HubModel() { WebSocket = currentSocket };
-
-            pool.hubs.TryAdd(socketId, hubModel);
+            var socketId = applicationService.RegisterToNetwork(hubModel);
 
             while (true)
             {
@@ -52,11 +50,10 @@ namespace Messenger.Controllers
                 }
             }
 
-            HubModel dummy;
-            pool.hubs.TryRemove(socketId, out dummy);
-
-            await currentSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", ct);
-            currentSocket.Dispose();
+            await LogOutFromNetwork(currentSocket, socketId, ct);
         }
+
+       
+
     }
 }
