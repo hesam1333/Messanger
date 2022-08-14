@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Middelware\" />
-    <Folder Include="Services\" />
     <Folder Include="Utilities\" />
   </ItemGroup>
 
