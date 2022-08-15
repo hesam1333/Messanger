@@ -17,21 +17,28 @@ namespace AcceptanceTest
                     ShowMenu();
                     string command = Console.ReadLine();
 
-                    if (command == "4")
+                    try
                     {
-                        break;
+                        if (command == "4")
+                        {
+                            break;
+                        }
+                        if (command == "1")
+                        {
+                            await ShowAllUsers(ct);
+                        }
+                        if (command == "2")
+                        {
+                            await SendMessageToUser(ct);
+                        }
+                        if (command == "3")
+                        {
+                            await ShowUserMessages(ct);
+                        }
                     }
-                    if (command == "1")
+                    catch (Exception e )
                     {
-                        await ShowAllUsers(ct);
-                    }
-                    if (command == "2")
-                    {
-                        await SendMessageToUser(ct);
-                    }
-                    if (command == "3")
-                    {
-                        await SendMessageToUser(ct);
+                        Console.WriteLine(e.Message);
                     }
                 }
             }

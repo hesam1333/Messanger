@@ -21,7 +21,7 @@ namespace Messenger.Services
                 ResiverId = TohubId
             };
 
-            hub.Messages.Append(msgModel);
+            hub.Messages.Add(msgModel);
 
             var sendMessage = new BaseMessaginModel()
             {
@@ -29,8 +29,9 @@ namespace Messenger.Services
                 MessageType = MessageType.Message.GetHashCode()
             };
             var jsonData = serializationBroker.Serilize(sendMessage);
-
             await socketBrocker.SendStringAsync(hub, jsonData, ct);
+
+
         }
 
         public async Task SendEroreToHub(string TohubId , Exception ex , CancellationToken ct = default)
