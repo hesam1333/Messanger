@@ -29,7 +29,7 @@ namespace Messenger.Middelware
             WebSocket currentSocket = await context.WebSockets.AcceptWebSocketAsync();
 
             var currentHub = new HubModel() { WebSocket = currentSocket };
-            var socketId = applicationService.RegisterToNetwork(currentHub);
+            var hubId = applicationService.RegisterToNetwork(currentHub);
 
             while (true)
             {
@@ -48,16 +48,16 @@ namespace Messenger.Middelware
                     }
                     else
                     {
-                        await applicationService.HandelResivedMessageAsync(currentHub, response, ct);
+                        await applicationService.HandelResivedMessageAsync(currentHub , hubId, response, ct);
                     }
                 }
                 catch (Exception e)
                 {
-                    await applicationService.SendEroreToHub(socketId, e, ct);
+                    await applicationService.SendEroreToHub(hubId, e, ct);
                 }
 
             }
-            await applicationService.LogOutFromNetwork(currentHub, socketId, ct);
+            await applicationService.LogOutFromNetwork(currentHub, hubId, ct);
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using Messenger.Brockers;
 using Messenger.Domain;
+using Newtonsoft.Json.Linq;
 using System.Net.WebSockets;
 
 namespace Messenger.Services
@@ -8,34 +9,30 @@ namespace Messenger.Services
     public partial class ApplicationService
     {
 
-        internal async Task HandelResivedMessageAsync(HubModel currentHub , BaseMessaginModel response , CancellationToken ct)
+        internal async Task HandelResivedMessageAsync(
+            HubModel currentHub, string currenthubId, BaseMessaginModel response, CancellationToken ct)
         {
             if (response.MessageType != MessageType.Command.GetHashCode()) return;
             var body = response.Body;
 
-            try
+            if (response.Command == "sendMsg")
             {
-                if (response.Command == "sendMsg")
-                {
-                    var message = (MessageModel)body;
-                    await SendMessageToHub(message.MessageBody, message.ResiverId, message.SenderId, ct);
-                }
-                if (response.Command == "getList")
-                {
-                    await this.GetHubsList(currentHub , ct);
-                }
-                if (response.Command == "getMessageList")
-                {
-                    var wantedHub = (string)body;
-                    await this.GetSpcificHubMessageList(currentHub, wantedHub, ct);
-                }
+                JObject jmessage = body as JObject;
+                var message = jmessage.ToObject<MessageModel>();
 
+                await SendMessageToHub(message.MessageBody, message.ResiverId, currenthubId, ct);
             }
-            catch
+            if (response.Command == "getList")
             {
-                throw new Exception("message is not in correct format") ;
+                await this.GetHubsList(currentHub, ct);
             }
-            
+            if (response.Command == "getMessageList")
+            {
+                var wantedHub = (string)body;
+                await this.GetSpcificHubMessageList(currentHub, wantedHub, ct);
+            }
+
+
 
         }
 

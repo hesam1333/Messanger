@@ -32,40 +32,25 @@ namespace AcceptanceTest
         }
 
         //Receiving messages
-        public async Task ReceiveMessageAsync(byte[] buffer)
+        public async Task<string> ReceiveMessageAsync(CancellationToken ct)
         {
-            while (true)
-            {
-                try
-                {
-                    var result = await wsClient.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None).ConfigureAwait(false);
+            byte[] buffer = new byte[8150];
 
-                    //Here is the received message as string
-                    var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                    Console.WriteLine(message);
-                    if (result.EndOfMessage) break;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error in receiving messages: {err}", ex.Message);
-                    break;
-                }
+            try
+            {
+                var result = await wsClient.ReceiveAsync(new ArraySegment<byte>(buffer), ct).ConfigureAwait(false);
+
+                //Here is the received message as string
+                var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                return message;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in receiving messages: {err}", ex.Message);
+                return null;
             }
         }
 
-        public async Task HandleMessagesAsync(CancellationToken token)
-        {
-            var buffer = new byte[1024 * 4];
-            while (wsClient.State == WebSocketState.Open)
-            {
-                await ReceiveMessageAsync(buffer);
-            }
-            if (wsClient.State != WebSocketState.Open)
-            {
-                Console.WriteLine("Connection closed. Status: {s}", wsClient.State.ToString());
-                // Your logic if state is different than `WebSocketState.Open`
-            }
-        }
 
     }
 }

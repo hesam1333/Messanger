@@ -9,8 +9,8 @@ namespace Messenger.Services
     {
         public async Task SendMessageToHub(string message, string TohubId, string senderId, CancellationToken ct = default)
         {
-            var hub = pool.hubs[TohubId];
-            if (hub == null)
+            HubModel hub;
+            if (!pool.hubs.TryGetValue(TohubId, out hub))
                 throw new Exception("hub not found");
 
             var msgModel = new MessageModel()
@@ -35,8 +35,8 @@ namespace Messenger.Services
 
         public async Task SendEroreToHub(string TohubId , Exception ex , CancellationToken ct = default)
         {
-            var hub = pool.hubs[TohubId];
-            if (hub == null)
+            HubModel hub;
+            if (!pool.hubs.TryGetValue(TohubId, out hub))
                 throw new Exception("hub not found");
 
             var msgModel = new MessageModel()
