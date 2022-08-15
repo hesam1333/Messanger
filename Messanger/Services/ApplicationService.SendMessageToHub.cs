@@ -31,7 +31,6 @@ namespace Messenger.Services
             var jsonData = serializationBroker.Serilize(sendMessage);
             await socketBrocker.SendStringAsync(hub, jsonData, ct);
 
-            await SendNotifToHub(senderId, "message sent", ct);
 
         }
 
