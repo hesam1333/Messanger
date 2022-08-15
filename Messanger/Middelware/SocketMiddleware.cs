@@ -50,7 +50,7 @@ namespace Messenger.Middelware
                 }
             }
 
-            await LogOutFromNetwork(currentSocket, socketId, ct);
+            await applicationService.LogOutFromNetwork(hubModel, socketId, ct);
         }
 
        

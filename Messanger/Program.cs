@@ -1,10 +1,8 @@
 
-namespace Messenger.Domain
+namespace Messenger
 {
     public static class Program
     {
-
-
         public static async Task Main(string[] args)
         {
             var builder = CreateHostBuilder(args).Build();

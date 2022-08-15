@@ -7,8 +7,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Messenger.Middelware;
 using Messenger.Brockers;
+using Messenger.Domain;
 
-namespace Messenger.Domain
+namespace Messenger
 {
     public class Startup
     {
