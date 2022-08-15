@@ -21,7 +21,6 @@ namespace AcceptanceTest
 
                 while (true)
                 {
-                    Console.Write("enter menu :");
                     string command = Console.ReadLine();
 
                     try
