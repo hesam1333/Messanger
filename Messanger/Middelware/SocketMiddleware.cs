@@ -31,36 +31,11 @@ namespace Messenger.Middelware
             var currentHub = new HubModel() { WebSocket = currentSocket };
             var hubId = applicationService.RegisterToNetwork(currentHub);
 
-            while (true)
-            {
-                if (ct.IsCancellationRequested)
-                {
-                    break;
-                }
-                try
-                {
-                    var response = await applicationService.ListenToHubAsync(currentHub, ct);
+            await applicationService.KeepSocketAlive(currentHub, hubId, ct);
 
-                    if (response == null)
-                    {
-                        if (currentHub.WebSocket.State != WebSocketState.Open)
-                            break;
-                    }
-                    else
-                    {
-                        await applicationService.HandelResivedMessageAsync(currentHub , hubId, response, ct);
-                    }
-                }
-                catch (Exception e)
-                {
-                    await applicationService.SendEroreToHub(hubId, e, ct);
-                }
-
-            }
             await applicationService.LogOutFromNetwork(currentHub, hubId, ct);
         }
 
-
-
+        
     }
 }
