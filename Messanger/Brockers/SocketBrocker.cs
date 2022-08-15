@@ -13,14 +13,16 @@ namespace Messenger.Brockers
             this.hubPool = hubPool;
         }
 
-        public IEnumerable<string> GetHubsList(CancellationToken ct = default)
+        public IEnumerable<string> GetHubsList()
         {
-           return hubPool.hubs.Select(i => i.Key);
+           return hubPool.hubs.Where(i => i.Value.WebSocket.State == WebSocketState.Open).Select(i => i.Key);
         }
 
-        public IEnumerable<MessageModel> GetHubsMessages(string hubId, CancellationToken ct = default)
+        public IEnumerable<MessageModel> GetHubsMessages(string hubId)
         {
-            var hub = hubPool.hubs[hubId];
+            HubModel hub;
+            if (!hubPool.hubs.TryGetValue(hubId, out hub))
+                throw new Exception("hub not found");
 
             return hub.Messages;
         }

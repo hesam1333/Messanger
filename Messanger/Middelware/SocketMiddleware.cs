@@ -2,13 +2,14 @@
 using Messenger.Services;
 using System.Net.WebSockets;
 
-namespace Messenger.Controllers
+namespace Messenger.Middelware
 {
     public class SocketMiddleware
     {
         readonly RequestDelegate next;
         HubPool pool;
         ApplicationService applicationService;
+
         public SocketMiddleware(RequestDelegate next, HubPool pool, ApplicationService applicationService)
         {
             this.next = next;
@@ -26,37 +27,15 @@ namespace Messenger.Controllers
 
             CancellationToken ct = context.RequestAborted;
             WebSocket currentSocket = await context.WebSockets.AcceptWebSocketAsync();
-            var socketId = Guid.NewGuid().ToString();
 
-            var hubModel = new HubModel() { WebSocket = currentSocket };
+            var currentHub = new HubModel() { WebSocket = currentSocket };
+            var hubId = applicationService.RegisterToNetwork(currentHub);
 
-            pool.hubs.TryAdd(socketId, hubModel);
+            await applicationService.KeepSocketAlive(currentHub, hubId, ct);
 
-            while (true)
-            {
-                if (ct.IsCancellationRequested)
-                {
-                    break;
-                }
-
-                var response = await applicationService.ListenToHubAsync(hubModel, ct);
-
-                if (response == null)
-                {
-                    if (hubModel.WebSocket.State != WebSocketState.Open)
-                        break;
-                }
-                else
-                {
-                    applicationService.HandelResivedMessageAsync(response);
-                }
-            }
-
-            HubModel dummy;
-            pool.hubs.TryRemove(socketId, out dummy);
-
-            await currentSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", ct);
-            currentSocket.Dispose();
+            await applicationService.LogOutFromNetwork(currentHub, hubId, ct);
         }
+
+        
     }
 }

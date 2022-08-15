@@ -5,6 +5,6 @@ namespace Messenger.Domain
     public class HubModel
     {
         public WebSocket WebSocket { get; set; }
-        public IEnumerable<MessageModel> Messages { get; set; } = Enumerable.Empty<MessageModel>();
+        public List<MessageModel> Messages { get; set; } = new List<MessageModel>();
     }
 }

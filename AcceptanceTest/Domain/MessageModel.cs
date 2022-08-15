@@ -1,4 +1,4 @@
-﻿namespace Messenger.Domain
+﻿namespace AcceptanceTest
 {
     public class MessageModel
     {

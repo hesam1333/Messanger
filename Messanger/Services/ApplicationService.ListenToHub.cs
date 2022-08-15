@@ -1,5 +1,6 @@
 ﻿using Messenger.Brockers;
 using Messenger.Domain;
+using Newtonsoft.Json.Linq;
 using System.Net.WebSockets;
 
 namespace Messenger.Services
@@ -8,27 +9,30 @@ namespace Messenger.Services
     public partial class ApplicationService
     {
 
-        internal void HandelResivedMessageAsync(BaseMessaginModel response)
+        internal async Task HandelResivedMessageAsync(
+            HubModel currentHub, string currenthubId, BaseMessaginModel response, CancellationToken ct)
         {
             if (response.MessageType != MessageType.Command.GetHashCode()) return;
+            var body = response.Body;
 
-            if(response.Command == "sendMsg")
+            if (response.Command == "sendMsg")
             {
+                JObject jmessage = body as JObject;
+                var message = jmessage.ToObject<MessageModel>();
 
+                await SendMessageToHub(message.MessageBody, message.ResiverId, currenthubId, ct);
             }
-            if(response.Command == "getList")
+            if (response.Command == "getList")
             {
-
+                await this.GetHubsList(currentHub, ct);
             }
-            if(response.Command == "getMessageList")
+            if (response.Command == "getMessageList")
             {
-
+                var wantedHub = (string)body;
+                await this.GetSpcificHubMessageList(currentHub, wantedHub, ct);
             }
 
-            if (response.Command == "quit")
-            {
 
-            }
 
         }
 
