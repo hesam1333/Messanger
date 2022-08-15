@@ -5,12 +5,16 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Messenger.Middelware;
+using Messenger.Brockers;
+using Messenger.Domain;
+using Messenger.Services;
 
-namespace Messenger.Domain
+namespace Messenger
 {
     public class Startup
     {
-        public Startup(IConfiguration Configuration , IWebHostEnvironment env )
+        public Startup(IConfiguration Configuration, IWebHostEnvironment env)
         {
             this.Configuration = Configuration;
             this.env = env;
@@ -33,13 +37,17 @@ namespace Messenger.Domain
         public void Configure(IApplicationBuilder app)
         {
             app.UseWebSockets();
+            app.UseMiddleware<SocketMiddleware>();
         }
 
 
 
         private void AddCore(IServiceCollection services, IConfiguration configuration)
         {
-
+            services.AddSingleton(typeof(HubPool));
+            services.AddTransient(typeof(ApplicationService));
+            services.AddTransient(typeof(ISerializationBroker), typeof(SerializationBrocker));
+            services.AddTransient(typeof(ISocketBrocker), typeof(SocketBrocker));
         }
 
 

@@ -16,7 +16,7 @@ namespace Messenger.Services
 
         }
 
-        private async Task LogOutFromNetwork(HubModel hubModel, string socketId, CancellationToken ct)
+        public async Task LogOutFromNetwork(HubModel hubModel, string socketId, CancellationToken ct)
         {
             pool.hubs.TryRemove(socketId, out hubModel);
 
