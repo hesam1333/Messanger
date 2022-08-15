@@ -20,7 +20,6 @@ namespace AcceptanceTest
             //Add sub protocol if it's needed
             wsClient.Options.AddSubProtocol("zap-protocol-v1");
 
-
             await wsClient.ConnectAsync(new Uri(server), token).ConfigureAwait(false);
         }
 
@@ -39,7 +38,7 @@ namespace AcceptanceTest
             try
             {
                 var result = await wsClient.ReceiveAsync(new ArraySegment<byte>(buffer), ct).ConfigureAwait(false);
-
+                
                 //Here is the received message as string
                 var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                 return message;

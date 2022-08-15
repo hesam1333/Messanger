@@ -31,10 +31,11 @@ namespace Messenger.Services
             var jsonData = serializationBroker.Serilize(sendMessage);
             await socketBrocker.SendStringAsync(hub, jsonData, ct);
 
+            
 
         }
 
-        public async Task SendEroreToHub(string TohubId , Exception ex , CancellationToken ct = default)
+        public async Task SendNotifToHub(string TohubId , Exception ex , CancellationToken ct = default)
         {
             HubModel hub;
             if (!pool.hubs.TryGetValue(TohubId, out hub))
