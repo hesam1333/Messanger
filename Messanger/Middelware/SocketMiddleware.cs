@@ -2,7 +2,7 @@
 using Messenger.Services;
 using System.Net.WebSockets;
 
-namespace Messenger.Controllers
+namespace Messenger.Middelware
 {
     public class SocketMiddleware
     {
