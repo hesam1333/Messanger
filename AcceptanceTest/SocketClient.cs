@@ -37,9 +37,7 @@ namespace AcceptanceTest
 
             try
             {
-                // just for testing 
                 await Task.Delay(new TimeSpan(0, 0, 3)).ContinueWith(o => { return; });
-
                 var result = await wsClient.ReceiveAsync(new ArraySegment<byte>(buffer), ct).ConfigureAwait(false);
                 
                 //Here is the received message as string

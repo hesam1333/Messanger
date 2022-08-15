@@ -18,25 +18,6 @@ namespace AcceptanceTest
             var json = JsonConvert.SerializeObject(socketCommand);
             await SocketClient.SendAsync(json, ct);
 
-            string respond = await SocketClient.ReceiveMessageAsync(ct);
-            BaseMessaginModel resivedMessage = JsonConvert.DeserializeObject<BaseMessaginModel>(respond);
-
-            if(resivedMessage.MessageType == 100)
-            {
-                var body = (JArray)resivedMessage.Body;
-
-                for(int i = 1; i <= body.Count; i++)
-                {
-                    Console.WriteLine("User #"+ i+ " Id is : " + body[i-1]);
-                }
-            }
-            else
-            {
-                var jbody = (JObject)resivedMessage.Body;
-                var body = jbody.ToObject<MessageModel>();
-
-                Console.WriteLine(body.MessageBody);
-            }
         }
 
     }
