@@ -32,7 +32,7 @@ namespace Messenger.Services
                 }
                 catch (Exception e)
                 {
-                    await this.SendEroreToHub(hubId, e, ct);
+                    await this.SendNotifToHub(hubId, e.Message, ct);
                 }
             }
         }

@@ -31,11 +31,11 @@ namespace Messenger.Services
             var jsonData = serializationBroker.Serilize(sendMessage);
             await socketBrocker.SendStringAsync(hub, jsonData, ct);
 
-            
+            await SendNotifToHub(senderId, "message sent", ct);
 
         }
 
-        public async Task SendNotifToHub(string TohubId , Exception ex , CancellationToken ct = default)
+        public async Task SendNotifToHub(string TohubId , string notif , CancellationToken ct = default)
         {
             HubModel hub;
             if (!pool.hubs.TryGetValue(TohubId, out hub))
@@ -44,7 +44,7 @@ namespace Messenger.Services
             var msgModel = new MessageModel()
             {
                 CreateDateTime = DateTime.UtcNow,
-                MessageBody = ex.Message,
+                MessageBody = notif,
                 SenderId = "system",
                 ResiverId = TohubId
             };
