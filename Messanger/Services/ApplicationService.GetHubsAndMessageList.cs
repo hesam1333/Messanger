@@ -8,7 +8,7 @@ namespace Messenger.Services
     public partial class ApplicationService
     {
 
-        internal async void GetHubsList(HubModel hubModel , CancellationToken ct)
+        internal async Task GetHubsList(HubModel hubModel , CancellationToken ct)
         {
             var hubs = socketBrocker.GetHubsList();
 
@@ -23,7 +23,7 @@ namespace Messenger.Services
 
         }
 
-        internal async void GetSpcificHubMessageList(HubModel CurrentHubModel,string hubId, CancellationToken ct)
+        internal async Task GetSpcificHubMessageList(HubModel CurrentHubModel,string hubId, CancellationToken ct)
         {
             var messages = socketBrocker.GetHubsMessages(hubId);
 

@@ -9,6 +9,7 @@ namespace Messenger.Middelware
         readonly RequestDelegate next;
         HubPool pool;
         ApplicationService applicationService;
+
         public SocketMiddleware(RequestDelegate next, HubPool pool, ApplicationService applicationService)
         {
             this.next = next;
@@ -27,8 +28,8 @@ namespace Messenger.Middelware
             CancellationToken ct = context.RequestAborted;
             WebSocket currentSocket = await context.WebSockets.AcceptWebSocketAsync();
 
-            var hubModel = new HubModel() { WebSocket = currentSocket };
-            var socketId = applicationService.RegisterToNetwork(hubModel);
+            var currentHub = new HubModel() { WebSocket = currentSocket };
+            var socketId = applicationService.RegisterToNetwork(currentHub);
 
             while (true)
             {
@@ -36,19 +37,18 @@ namespace Messenger.Middelware
                 {
                     break;
                 }
-
                 try
                 {
-                    var response = await applicationService.ListenToHubAsync(hubModel, ct);
+                    var response = await applicationService.ListenToHubAsync(currentHub, ct);
 
                     if (response == null)
                     {
-                        if (hubModel.WebSocket.State != WebSocketState.Open)
+                        if (currentHub.WebSocket.State != WebSocketState.Open)
                             break;
                     }
                     else
                     {
-                        applicationService.HandelResivedMessageAsync(response);
+                        await applicationService.HandelResivedMessageAsync(currentHub, response, ct);
                     }
                 }
                 catch (Exception e)
@@ -57,8 +57,7 @@ namespace Messenger.Middelware
                 }
 
             }
-
-            await applicationService.LogOutFromNetwork(hubModel, socketId, ct);
+            await applicationService.LogOutFromNetwork(currentHub, socketId, ct);
         }
 
 

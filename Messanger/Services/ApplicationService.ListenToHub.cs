@@ -8,7 +8,7 @@ namespace Messenger.Services
     public partial class ApplicationService
     {
 
-        internal async void HandelResivedMessageAsync(BaseMessaginModel response , CancellationToken ct)
+        internal async Task HandelResivedMessageAsync(HubModel currentHub , BaseMessaginModel response , CancellationToken ct)
         {
             if (response.MessageType != MessageType.Command.GetHashCode()) return;
             var body = response.Body;
@@ -22,11 +22,12 @@ namespace Messenger.Services
                 }
                 if (response.Command == "getList")
                 {
-
+                    await this.GetHubsList(currentHub , ct);
                 }
                 if (response.Command == "getMessageList")
                 {
-
+                    var wantedHub = (string)body;
+                    await this.GetSpcificHubMessageList(currentHub, wantedHub, ct);
                 }
 
             }
