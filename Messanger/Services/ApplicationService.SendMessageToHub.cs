@@ -32,5 +32,29 @@ namespace Messenger.Services
             await socketBrocker.SendStringAsync(hub, jsonData, ct);
         }
 
+        public async Task SendEroreToHub(string TohubId , Exception ex , CancellationToken ct = default)
+        {
+            var hub = pool.hubs[TohubId];
+            if (hub == null)
+                throw new Exception("hub not found");
+
+            var msgModel = new MessageModel()
+            {
+                CreateDateTime = DateTime.UtcNow,
+                MessageBody = ex.Message,
+                SenderId = "system",
+            };
+
+            hub.Messages.Append(msgModel);
+
+            var sendMessage = new BaseMessaginModel()
+            {
+                Body = msgModel,
+                MessageType = MessageType.Error.GetHashCode()
+            };
+            var jsonData = serializationBroker.Serilize(sendMessage);
+
+            await socketBrocker.SendStringAsync(hub, jsonData, ct);
+        }
     }
 }

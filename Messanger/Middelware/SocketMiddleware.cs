@@ -53,15 +53,15 @@ namespace Messenger.Middelware
                 }
                 catch (Exception e)
                 {
-                    await applicationService.SendMessageToHub(e.Message , socketId , "system" , ct);
+                    await applicationService.SendEroreToHub(socketId, e, ct);
                 }
-                
+
             }
 
             await applicationService.LogOutFromNetwork(hubModel, socketId, ct);
         }
 
-       
+
 
     }
 }
