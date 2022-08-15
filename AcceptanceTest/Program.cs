@@ -16,6 +16,11 @@ namespace AcceptanceTest
                 await OpenConnectionAsync(ct);
 
                 await SendAsync("test", ct);
+
+                byte[] buffer = new byte[5431];
+                await ReceiveMessageAsync(buffer);
+
+                Console.ReadLine();
             }
         }
 
@@ -23,8 +28,8 @@ namespace AcceptanceTest
         public static async Task OpenConnectionAsync(CancellationToken token)
         {
 
-            //Set keep alive interval
-            wsClient.Options.KeepAliveInterval = TimeSpan.Zero;
+            //Set keep alive interval 5 min
+            wsClient.Options.KeepAliveInterval = TimeSpan.FromMinutes(5);
 
             //Set desired headers
             wsClient.Options.SetRequestHeader("Host", "localhost:5052");
@@ -33,7 +38,7 @@ namespace AcceptanceTest
             wsClient.Options.AddSubProtocol("zap-protocol-v1");
 
 
-            await wsClient.ConnectAsync(new Uri("http://localhost:5052/"), token).ConfigureAwait(false);
+            await wsClient.ConnectAsync(new Uri("ws://localhost:5052/"), token).ConfigureAwait(false);
         }
 
         //Send message
@@ -54,6 +59,7 @@ namespace AcceptanceTest
 
                     //Here is the received message as string
                     var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    Console.WriteLine(message);
                     if (result.EndOfMessage) break;
                 }
                 catch (Exception ex)

@@ -37,17 +37,25 @@ namespace Messenger.Middelware
                     break;
                 }
 
-                var response = await applicationService.ListenToHubAsync(hubModel, ct);
+                try
+                {
+                    var response = await applicationService.ListenToHubAsync(hubModel, ct);
 
-                if (response == null)
-                {
-                    if (hubModel.WebSocket.State != WebSocketState.Open)
-                        break;
+                    if (response == null)
+                    {
+                        if (hubModel.WebSocket.State != WebSocketState.Open)
+                            break;
+                    }
+                    else
+                    {
+                        applicationService.HandelResivedMessageAsync(response);
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    applicationService.HandelResivedMessageAsync(response);
+                    await applicationService.SendMessageToHub(e.Message , socketId , "system" , ct);
                 }
+                
             }
 
             await applicationService.LogOutFromNetwork(hubModel, socketId, ct);
