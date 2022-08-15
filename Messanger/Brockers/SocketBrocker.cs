@@ -13,12 +13,12 @@ namespace Messenger.Brockers
             this.hubPool = hubPool;
         }
 
-        public IEnumerable<string> GetHubsList(CancellationToken ct = default)
+        public IEnumerable<string> GetHubsList()
         {
            return hubPool.hubs.Select(i => i.Key);
         }
 
-        public IEnumerable<MessageModel> GetHubsMessages(string hubId, CancellationToken ct = default)
+        public IEnumerable<MessageModel> GetHubsMessages(string hubId)
         {
             var hub = hubPool.hubs[hubId];
 
