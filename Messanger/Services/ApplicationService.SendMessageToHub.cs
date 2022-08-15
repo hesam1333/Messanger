@@ -18,6 +18,7 @@ namespace Messenger.Services
                 CreateDateTime = DateTime.UtcNow,
                 MessageBody = message,
                 SenderId = senderId,
+                ResiverId = TohubId
             };
 
             hub.Messages.Append(msgModel);
@@ -43,6 +44,7 @@ namespace Messenger.Services
                 CreateDateTime = DateTime.UtcNow,
                 MessageBody = ex.Message,
                 SenderId = "system",
+                ResiverId = TohubId
             };
 
             hub.Messages.Append(msgModel);

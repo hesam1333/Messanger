@@ -8,27 +8,33 @@ namespace Messenger.Services
     public partial class ApplicationService
     {
 
-        internal void HandelResivedMessageAsync(BaseMessaginModel response)
+        internal async void HandelResivedMessageAsync(BaseMessaginModel response , CancellationToken ct)
         {
             if (response.MessageType != MessageType.Command.GetHashCode()) return;
+            var body = response.Body;
 
-            if(response.Command == "sendMsg")
+            try
             {
+                if (response.Command == "sendMsg")
+                {
+                    var message = (MessageModel)body;
+                    await SendMessageToHub(message.MessageBody, message.ResiverId, message.SenderId, ct);
+                }
+                if (response.Command == "getList")
+                {
+
+                }
+                if (response.Command == "getMessageList")
+                {
+
+                }
 
             }
-            if(response.Command == "getList")
+            catch
             {
-
+                throw new Exception("message is not in correct format") ;
             }
-            if(response.Command == "getMessageList")
-            {
-
-            }
-
-            if (response.Command == "quit")
-            {
-
-            }
+            
 
         }
 
