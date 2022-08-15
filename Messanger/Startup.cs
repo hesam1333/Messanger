@@ -8,6 +8,7 @@ using Newtonsoft.Json.Serialization;
 using Messenger.Middelware;
 using Messenger.Brockers;
 using Messenger.Domain;
+using Messenger.Services;
 
 namespace Messenger
 {
@@ -43,7 +44,8 @@ namespace Messenger
 
         private void AddCore(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton(new HubPool());
+            services.AddSingleton(typeof(HubPool));
+            services.AddTransient(typeof(ApplicationService));
             services.AddTransient(typeof(ISerializationBroker), typeof(SerializationBrocker));
             services.AddTransient(typeof(ISocketBrocker), typeof(SocketBrocker));
         }
